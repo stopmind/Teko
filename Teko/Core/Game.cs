@@ -7,7 +7,7 @@ public class Game
 {
     private readonly GameInner _inner;
     private readonly Backend _backend;
-    private readonly Dictionary<Type, Service> _services = new();
+    private readonly Dictionary<Type, AService> _services = new();
 
     private Scene? _scene;
     
@@ -57,21 +57,21 @@ public class Game
         }
     }
 
-    public void AddService(Service service)
+    public void AddService(AService aService)
     {
-        if (!_services.TryAdd(service.GetType(), service))
+        if (!_services.TryAdd(aService.GetType(), aService))
             throw new Exception("Failed add service");
         
-        service.Setup(_inner);
+        aService.Setup(_inner);
     }
     
-    public TService? TryGetService<TService>() where TService : Service
+    public TService? TryGetService<TService>() where TService : AService
     {
         _services.TryGetValue(typeof(TService), out var service);
         return (TService?)service;
     }
     
-    public TService GetService<TService>() where TService : Service
+    public TService GetService<TService>() where TService : AService
     {
         if (_services.TryGetValue(typeof(TService), out var service))
             return (TService)service;

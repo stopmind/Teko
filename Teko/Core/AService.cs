@@ -1,6 +1,6 @@
 namespace Teko.Core;
 
-public abstract class Service
+public abstract class AService
 {
     private GameInner? _gameInner;
     protected GameInner GameInner => _gameInner!;

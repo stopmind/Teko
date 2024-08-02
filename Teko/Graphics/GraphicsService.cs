@@ -3,7 +3,7 @@ using Teko.Core;
 
 namespace Teko.Graphics;
 
-public class GraphicsService : Service
+public class GraphicsService : AService
 {
     private RectangleShape _rectShape = new();
     private Sprite _sprite = new();
