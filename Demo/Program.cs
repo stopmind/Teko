@@ -2,11 +2,9 @@
 
 using Demo;
 using Teko.Core;
-using Teko.Graphics;
-using Teko.Resources;
 
-var game = new Game();
-game.AddService(new GraphicsService());
-game.AddService(new ResourcesLoader(["Content"]));
-game.Scene = new TestScene();
-game.Run();
+new GameBuilder()
+    .StdServices(["Content"])
+    .Window(800, 450, "Teko Demo")
+    .Scene(new TestScene())
+    .Run();

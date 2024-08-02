@@ -39,16 +39,11 @@ public class Game
         
         window.SetFramerateLimit(120);
 
-        window.Closed += (_,_) =>
-        {
-            window.Close();
-        };
+        window.Closed += (_, _) => _scene?.OnClose();
         
         while (_backend.Window.IsOpen)
         {
             Update();
-
-            //window.Clear(Color.Green);
             
             Draw();
             
@@ -56,6 +51,9 @@ public class Game
             window.DispatchEvents();
         }
     }
+
+    public void Exit()
+        => _backend.Window.Close();
 
     public void AddService(AService aService)
     {
@@ -79,9 +77,9 @@ public class Game
         throw new Exception("Failed get service");
     }
     
-    public Game()
+    public Game(uint width, uint height, string title)
     {
-        _backend = new Backend(new RenderWindow(new VideoMode(300, 300), "TEKO"));
+        _backend = new Backend(new RenderWindow(new VideoMode(width, height), title));
         _inner = new GameInner(_backend);
     }
 }

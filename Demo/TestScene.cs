@@ -1,4 +1,3 @@
-using System.IO.Enumeration;
 using Teko.Core;
 using Teko.Graphics;
 using Teko.Resources;
@@ -12,8 +11,8 @@ public class TestScene : Scene
     
     public override void Ready()
     {
-        _graphics = Game!.GetService<GraphicsService>();
-        _texture = Game!.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
+        _graphics = Game.GetService<GraphicsService>();
+        _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
     }
 
     public override void Update()
@@ -24,5 +23,10 @@ public class TestScene : Scene
     public override void Draw()
     {
         _graphics!.DrawRect(new Rect(0, 0, 58, 92), Color.White, _texture);
+    }
+
+    public override void OnClose()
+    {
+        Game.Exit();
     }
 }
