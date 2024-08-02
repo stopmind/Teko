@@ -10,4 +10,6 @@ public class Rect(Vector2 position, Vector2 size)
     
     public float Top => Position.Y;
     public float Bottom => Position.Y + Size.Y;
+
+    public Rect(float x, float y, float width, float height) : this(new(x, y), new(width, height)) { }
 }

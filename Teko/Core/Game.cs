@@ -8,8 +8,18 @@ public class Game
     private readonly GameInner _inner;
     private readonly Backend _backend;
     private readonly Dictionary<Type, Service> _services = new();
+
+    private Scene? _scene;
     
-    public Scene? Scene;
+    public Scene? Scene
+    {
+        get => _scene;
+        set
+        {
+            _scene = value;
+            _scene?.Setup(this);
+        }
+    }
 
     private void Update()
     {
@@ -38,7 +48,7 @@ public class Game
         {
             Update();
 
-            window.Clear(Color.Green);
+            //window.Clear(Color.Green);
             
             Draw();
             
@@ -55,16 +65,16 @@ public class Game
         service.Setup(_inner);
     }
     
-    public Service? TryGetService<TService>() where TService : Service
+    public TService? TryGetService<TService>() where TService : Service
     {
         _services.TryGetValue(typeof(TService), out var service);
-        return service;
+        return (TService?)service;
     }
     
-    public Service GetService<TService>() where TService : Service
+    public TService GetService<TService>() where TService : Service
     {
         if (_services.TryGetValue(typeof(TService), out var service))
-            return service;
+            return (TService)service;
         
         throw new Exception("Failed get service");
     }
