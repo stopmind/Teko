@@ -15,12 +15,12 @@ public class TestScene : Scene
         _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
     }
 
-    public override void Update()
+    public override void Update(float delta)
     {
         
     }
 
-    public override void Draw()
+    public override void Draw(float delta)
     {
         _graphics!.DrawRect(new Rect(0, 0, 58, 92), Color.White, _texture);
     }

@@ -1,14 +1,14 @@
-﻿using System.Data;
+﻿using Teko.Core;
 using Teko.Graphics;
 using Teko.Resources;
 
-namespace Teko.Core;
+namespace Teko.Utils;
 
 public class GameBuilder
 {
     private Scene? _scene;
     private uint _width, _height;
-    private string _title;
+    private string? _title;
     private bool _windowConfigured;
     private List<AService> _services = new();
     
@@ -33,8 +33,9 @@ public class GameBuilder
         return this;
     }
 
-    public GameBuilder StdServices(string[] packsPaths)
+    public GameBuilder StdServices(string[] packsPaths, string logPath)
     {
+        AddService(new Logger(logPath));
         AddService(new GraphicsService());
         AddService(new ResourcesLoader(packsPaths));
         return this;
@@ -48,7 +49,7 @@ public class GameBuilder
         if (_scene == null)
             throw new Exception("Scene not configured");
         
-        var game = new Game(_width, _height, _title);
+        var game = new Game(_width, _height, _title!);
         foreach (var service in _services)
             game.AddService(service);
         game.Scene = _scene;

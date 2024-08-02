@@ -5,23 +5,28 @@ namespace Teko.Resources;
 public class ResourcesLoader(string[] paths) : AService
 {
     private List<ResourcesPack> _packs = new();
+    private Logger? _logger;
     
     protected override void OnSetup()
     {
+        _logger = Game.GetService<Logger>();
+        
         foreach (var path in paths)
+        {
             foreach (var root in Directory.GetDirectories(path))
             {
                 try
                 {
                     var pack = new ResourcesPack(root);
                     _packs.Add(pack);
-                    Console.WriteLine($"Resources: Detected new pack \"{pack.Name}\" at \"{root}\"");
+                    _logger?.Info($"Resources: Detected new pack \"{pack.Name}\" at \"{root}\"");
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($"Resources: Invalid pack at \"{root}\": {exception.Message}");
+                    _logger?.Error($"Resources: Invalid pack at \"{root}\": {exception.Message}");
                 }
             }
+        }
     }
 
     public TResource? LoadResource<TResource>(string path) where TResource : IResource
@@ -32,7 +37,7 @@ public class ResourcesLoader(string[] paths) : AService
 
             if (stream == null)
             {
-                Console.WriteLine($"Resources: Pack \"{pack.Name}\" don't have resource \"{path}\"");
+                _logger?.Info($"Resources: Pack \"{pack.Name}\" don't have resource \"{path}\"");
                 continue;
             }
 
@@ -42,11 +47,11 @@ public class ResourcesLoader(string[] paths) : AService
             }
             catch (Exception exception)
             {
-                Console.WriteLine($"Resources: Failed load resource \"{path}\" from pack \"{pack.Name}\": {exception.Message}");
+                _logger?.Error($"Resources: Failed load resource \"{path}\" from pack \"{pack.Name}\": {exception.Message}");
             }
         }
 
-        Console.WriteLine($"Resources: Failed load resource \"{path}\", none of packs contain a valid resource");
+        _logger?.Error($"Resources: Failed load resource \"{path}\", none of packs contain a valid resource");
         
         return default;
     }

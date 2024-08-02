@@ -1,4 +1,5 @@
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace Teko.Core;
@@ -8,6 +9,7 @@ public class Game
     private readonly GameInner _inner;
     private readonly Backend _backend;
     private readonly Dictionary<Type, AService> _services = new();
+    private readonly Clock _deltaClock = new();
 
     private Scene? _scene;
     
@@ -23,13 +25,13 @@ public class Game
 
     private void Update()
     {
-        Scene?.Update();
+        Scene?.Update(_deltaClock.ElapsedTime.AsSeconds());
         _inner.CallUpdate();
     }
     
     private void Draw()
     {
-        Scene?.Draw();
+        Scene?.Draw(_deltaClock.ElapsedTime.AsSeconds());
         _inner.CallDraw();
     }
     
@@ -40,12 +42,14 @@ public class Game
         window.SetFramerateLimit(120);
 
         window.Closed += (_, _) => _scene?.OnClose();
-        
+
+        _deltaClock.Restart();
         while (_backend.Window.IsOpen)
         {
             Update();
             
             Draw();
+            _deltaClock.Restart();
             
             window.Display();
             window.DispatchEvents();
@@ -53,14 +57,17 @@ public class Game
     }
 
     public void Exit()
-        => _backend.Window.Close();
+    {
+        _inner.CallExit();
+        _backend.Window.Close();
+    }
 
     public void AddService(AService aService)
     {
         if (!_services.TryAdd(aService.GetType(), aService))
             throw new Exception("Failed add service");
         
-        aService.Setup(_inner);
+        aService.Setup(this, _inner);
     }
     
     public TService? TryGetService<TService>() where TService : AService
