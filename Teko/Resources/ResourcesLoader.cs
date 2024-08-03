@@ -27,6 +27,8 @@ public class ResourcesLoader(string[] paths) : AService
                 }
             }
         }
+        
+        _packs.Sort((aPack, bPack) => aPack.Priority - bPack.Priority);
     }
 
     public TResource? LoadResource<TResource>(string path) where TResource : IResource
