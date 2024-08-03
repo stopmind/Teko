@@ -34,7 +34,7 @@ public class TestScene : Scene
         if (_input!.IsDown("playerLeft"))  move.X--;
         if (_input!.IsDown("playerRight")) move.X++;
         
-        _pos += new Vector2(move.X * delta * _speed, move.Y * delta * _speed);
+        _pos += move.Normalazie() * delta * _speed;
     }
 
     public override void Draw(float delta)
