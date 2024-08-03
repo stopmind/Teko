@@ -36,6 +36,7 @@ public class GameBuilder
     public GameBuilder StdServices(string[] packsPaths, string logPath)
     {
         AddService(new Logger(logPath));
+        AddService(new Input.Input());
         AddService(new GraphicsService());
         AddService(new ResourcesLoader(packsPaths));
         return this;
