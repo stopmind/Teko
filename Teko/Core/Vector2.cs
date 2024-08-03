@@ -39,7 +39,7 @@ public class Vector2(float x, float y)
     public static bool operator !=(Vector2 a, Vector2 b) 
         => a.X != b.X || a.Y != b.Y;
 
-    public Vector2 Normalazie()
+    public Vector2 Normalize()
     {
         if (this == Zero)
             return Zero;
