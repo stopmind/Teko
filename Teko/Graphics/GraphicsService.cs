@@ -12,6 +12,8 @@ public class GraphicsService : AService
     private List<DrawCall> _calls = new();
     private RenderTarget? _target;
 
+    public Color FillColor = Color.Black;
+
     protected override void OnSetup() {
         GameInner.DrawEvent += Flush;
         _target = GameInner.Backend.Window;
@@ -50,6 +52,7 @@ public class GraphicsService : AService
     
     private void Flush()
     {
+        _target!.Clear(FillColor.ToSfmlColor());
         _context = null;
 
         var layers = _calls.GroupBy(call =>
