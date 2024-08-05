@@ -5,15 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.1.0</Version>
+        <Version>0.1.2</Version>
         <Authors>stopmind</Authors>
         <Description>Simple gamedev framework</Description>
         <PackageProjectUrl>https://github.com/stopmind/Teko</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="SFML.Net" Version="2.6.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" PrivateAssets="compile"/>
+      <PackageReference Include="SFML.Net" Version="2.6.0" PrivateAssets="compile"/>
     </ItemGroup>
 
 </Project>

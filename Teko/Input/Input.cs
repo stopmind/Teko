@@ -1,4 +1,5 @@
-﻿using Teko.Core;
+﻿using SFML.Window;
+using Teko.Core;
 
 namespace Teko.Input;
 
@@ -14,8 +15,11 @@ public class Input : AService
         };
     }
 
-    public void SetEvent(string id, Key key)
-        => _events[id] = new InputEvent(InputState.Up, key);
+    public void SetKeyboardEvent(string id, Key key)
+        => _events[id] = new InputEvent(() => !Keyboard.IsKeyPressed((Keyboard.Key)key));
+    
+    public void SetMouseEvent(string id, MouseButton button)
+        => _events[id] = new InputEvent(() => !Mouse.IsButtonPressed((Mouse.Button)button));
 
     public bool IsUp(string id)
         => _events[id].State == InputState.Up;

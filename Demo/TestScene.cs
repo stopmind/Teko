@@ -19,10 +19,10 @@ public class TestScene : Scene
         _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
         
         _input = Game.GetService<Input>();
-        _input.SetEvent("playerUp", Key.W);
-        _input.SetEvent("playerLeft", Key.A);
-        _input.SetEvent("playerDown", Key.S);
-        _input.SetEvent("playerRight", Key.D);
+        _input.SetKeyboardEvent("playerUp", Key.W);
+        _input.SetKeyboardEvent("playerLeft", Key.A);
+        _input.SetKeyboardEvent("playerDown", Key.S);
+        _input.SetKeyboardEvent("playerRight", Key.D);
     }
 
     public override void Update(float delta)

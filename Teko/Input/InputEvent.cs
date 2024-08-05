@@ -2,22 +2,16 @@
 
 namespace Teko.Input;
 
-internal class InputEvent
+internal class InputEvent(Func<bool> isUp)
 {
-    private Key _key;
-    public InputState State;
+    private readonly Func<bool> _isUp = isUp;
+    public InputState State = InputState.Up;
 
     public void Update()
     {
-        var newState = Keyboard.IsKeyPressed((Keyboard.Key)_key) ? InputState.Down : InputState.Up;
+        var newState = _isUp() ? InputState.Up : InputState.Down;
 
         if (State == InputState.Down && newState == InputState.Up) State = InputState.Pressed;
         else State = newState;
-    }
-    
-    public InputEvent(InputState state, Key key)
-    {
-        State = state;
-        _key = key;
     }
 }
