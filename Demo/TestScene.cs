@@ -16,6 +16,7 @@ public class TestScene : Scene
     public override void Ready()
     {
         _graphics = Game.GetService<GraphicsService>();
+        _graphics.SetLayersCount(1);
         _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
         
         _input = Game.GetService<Input>();
