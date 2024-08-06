@@ -11,6 +11,7 @@ public class GraphicsService : AService
     private DrawContext? _context;
     private List<DrawCall> _calls = new();
     private RenderTarget? _target;
+    private readonly List<View?> _views = new();
 
     public Color FillColor = Color.Black;
 
@@ -19,8 +20,17 @@ public class GraphicsService : AService
         _target = GameInner.Backend.Window;
     }
 
-    public void SetContext(DrawContext context) =>
+    public void SetContext(DrawContext? context) =>
         _context = context;
+
+    public void SetLayersCount(int count)
+    {
+        for (var i = _views.Count; i < count; i++)
+            _views.Add(null);
+    }
+
+    public void SetView(int layer, View? view)
+        => _views[layer] = view;
 
     private void AddCall(Action func) =>
         _calls.Add(new DrawCall(_context, func));
@@ -60,11 +70,11 @@ public class GraphicsService : AService
             if (call.Context != null)
                 return call.Context.LayerIndex;
             return 0;
-        });
+        }).ToArray();
 
-        foreach (var layer in layers)
+        for (var i = 0; i < layers.Length; i++)
         {
-            var layerCalls = layer.ToList();
+            var layerCalls = layers[i].ToList();
             layerCalls.Sort((call1, call2) =>
             {
                 var x = 0f;
@@ -76,7 +86,9 @@ public class GraphicsService : AService
                 else if (x < y) return -1;
                 else            return 0;
             });
-
+            
+            _target.SetView(_views[i] == null ? _target.DefaultView : _views[i]!.ToSfmlView());
+            
             foreach (var call in layerCalls)
                 call.Func();
         }
