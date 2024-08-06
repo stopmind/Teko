@@ -15,6 +15,9 @@ public class RectI(Vector2i position, Vector2i size)
 
     internal IntRect ToSfmlRect()
         => new(Position.ToSfmlVec(), Size.ToSfmlVec());
+
+    public RectF ToFloat()
+        => new(Position.ToFloat(), Size.ToFloat());
     
     public RectI(int x, int y, int width, int height) : this(new(x, y), new(width, height)) { }
 }

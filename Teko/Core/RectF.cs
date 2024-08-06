@@ -16,5 +16,8 @@ public class RectF(Vector2f position, Vector2f size)
     internal FloatRect ToSfmlRect()
         => new(Position.ToSfmlVec(), Size.ToSfmlVec());
     
+    public RectI ToInt()
+        => new(Position.ToInt(), Size.ToInt());
+    
     public RectF(float x, float y, float width, float height) : this(new(x, y), new(width, height)) { }
 }

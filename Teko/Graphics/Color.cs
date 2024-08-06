@@ -14,5 +14,10 @@ public class Color(byte r, byte g, byte b, byte a)
         new(R, G, B, A);
 
     public Color(byte r, byte g, byte b) : this(r, g, b, 255) { }
-
+    public Color(uint value) : this(
+        (byte)((value & 0xff000000) >> 24), 
+        (byte)((value & 0x00ff0000) >> 16), 
+        (byte)((value & 0x0000ff00) >> 8), 
+        (byte)(value & 0x000000ff)
+        ) {}
 }

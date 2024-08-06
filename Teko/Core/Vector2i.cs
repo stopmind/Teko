@@ -13,6 +13,8 @@ public class Vector2i(int x, int y)
     
     internal SFML.System.Vector2i ToSfmlVec() => new(X, Y);
 
+    public Vector2f ToFloat() => new(X, Y);
+    
     public static Vector2i operator+(Vector2i a, Vector2i b) =>
         new(a.X + b.X, a.Y + b.Y);
     
