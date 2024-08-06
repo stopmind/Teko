@@ -3,9 +3,9 @@ using SFML.Graphics;
 
 namespace Teko.Core;
 
-public class Rect(Vector2 position, Vector2 size)
+public class RectF(Vector2f position, Vector2f size)
 {
-    public Vector2 Position = position, Size = size;
+    public Vector2f Position = position, Size = size;
 
     public float Left => Position.X;
     public float Right => Position.X + Size.X;
@@ -16,5 +16,5 @@ public class Rect(Vector2 position, Vector2 size)
     internal FloatRect ToSfmlRect()
         => new(Position.ToSfmlVec(), Size.ToSfmlVec());
     
-    public Rect(float x, float y, float width, float height) : this(new(x, y), new(width, height)) { }
+    public RectF(float x, float y, float width, float height) : this(new(x, y), new(width, height)) { }
 }

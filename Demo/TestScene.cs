@@ -10,7 +10,7 @@ public class TestScene : Scene
     private GraphicsService? _graphics;
     private Input? _input;
     private Texture? _texture;
-    private Vector2 _pos = new(0,0);
+    private Vector2f _pos = new(0,0);
     private float _speed = 40f;
     
     public override void Ready()
@@ -28,7 +28,7 @@ public class TestScene : Scene
 
     public override void Update(float delta)
     {
-        var move = new Vector2(0, 0);
+        var move = new Vector2f(0, 0);
 
         if (_input!.IsDown("playerUp"))    move.Y--;
         if (_input!.IsDown("playerDown"))  move.Y++;
@@ -40,7 +40,7 @@ public class TestScene : Scene
 
     public override void Draw(float delta)
     {
-        _graphics!.DrawRect(new Rect(_pos, new Vector2(64, 64)), Color.White, _texture);
+        _graphics!.DrawRect(new RectF(_pos, new Vector2f(64, 64)), Color.White, _texture);
     }
 
     public override void OnClose()

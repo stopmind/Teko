@@ -35,12 +35,12 @@ public class GraphicsService : AService
     private void AddCall(Action func) =>
         _calls.Add(new DrawCall(_context, func));
 
-    public void DrawRect(Rect rect, Color color, Texture? texture)
+    public void DrawRect(RectF rectF, Color color, Texture? texture)
     {
         AddCall(() =>
         {
-            _rectShape.Position = rect.Position.ToSfmlVec();
-            _rectShape.Size = rect.Size.ToSfmlVec();
+            _rectShape.Position = rectF.Position.ToSfmlVec();
+            _rectShape.Size = rectF.Size.ToSfmlVec();
             _rectShape.Texture = texture?.SfmlTexture;
             _rectShape.FillColor = color.ToSfmlColor();
             
@@ -48,7 +48,7 @@ public class GraphicsService : AService
         });
     }
 
-    public void DrawSprite(Vector2 position, Color color, Texture texture)
+    public void DrawSprite(Vector2f position, Color color, Texture texture)
     {
         AddCall(() =>
         {
