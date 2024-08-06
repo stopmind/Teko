@@ -45,7 +45,7 @@ public class ResourcesLoader(string[] paths) : AService
 
             try
             {
-                return TResource.Load(stream);
+                return TResource.Load(this, stream);
             }
             catch (Exception exception)
             {

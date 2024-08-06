@@ -12,7 +12,7 @@ public class Texture : IResource
         SfmlTexture = texture;
     }
 
-    public static dynamic Load(Stream stream)
+    public static dynamic Load(ResourcesLoader loader, Stream stream)
         => new Texture(new SFML.Graphics.Texture(stream));
 
     public Texture SubTexture(RectI rect)

@@ -2,5 +2,5 @@
 
 public interface IResource
 { 
-    static abstract dynamic Load(Stream stream);
+    static abstract dynamic Load(ResourcesLoader loader, Stream stream);
 }
