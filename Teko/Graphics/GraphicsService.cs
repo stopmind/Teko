@@ -59,6 +59,9 @@ public class GraphicsService : AService
             _target!.Draw(_sprite);
         });
     }
+
+    public Vector2i GetSize()
+        => new((int)_target!.Size.X, (int)_target!.Size.Y);
     
     private void Flush()
     {
