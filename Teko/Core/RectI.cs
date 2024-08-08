@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace Teko.Core;
 
-public class RectI(Vector2i position, Vector2i size)
+public struct RectI(Vector2i position, Vector2i size)
 {
     public Vector2i Position = position, Size = size;
 
@@ -18,6 +18,14 @@ public class RectI(Vector2i position, Vector2i size)
 
     public RectF ToFloat()
         => new(Position.ToFloat(), Size.ToFloat());
+    
+    public override int GetHashCode()
+    {
+        return unchecked((int)( (uint)Left ^
+                                ( ( (uint)Top << 13 ) | ( (uint)Top >> 19 ) ) ^
+                                ( ( (uint)Size.X << 26 ) | ( (uint)Size.X >> 6 ) ) ^
+                                ( ( (uint)Size.Y << 7 ) | ( (uint)Size.Y >> 25 ) ) ));
+    }
     
     public RectI(int x, int y, int width, int height) : this(new(x, y), new(width, height)) { }
 }

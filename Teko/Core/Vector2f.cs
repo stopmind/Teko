@@ -2,7 +2,7 @@ using SFML.System;
 
 namespace Teko.Core;
 
-public class Vector2f(float x, float y)
+public struct Vector2f(float x, float y)
 {
     public static readonly Vector2f Zero  = new(0);
     public static readonly Vector2f One   = new(1);
@@ -12,7 +12,7 @@ public class Vector2f(float x, float y)
     public static readonly Vector2f Left  = new(-1, 0);
     
     public float X = x, Y = y;
-    
+     
     internal SFML.System.Vector2f ToSfmlVec() => new(X, Y);
 
     public Vector2i ToInt() => new((int)X, (int)Y);
@@ -40,6 +40,8 @@ public class Vector2f(float x, float y)
 
     public static bool operator !=(Vector2f a, Vector2f b) 
         => a.X != b.X || a.Y != b.Y;
+
+    public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
     public Vector2f Normalize()
     {

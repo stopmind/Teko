@@ -1,6 +1,6 @@
 namespace Teko.Graphics;
 
-public class Color(byte r, byte g, byte b, byte a)
+public struct Color(byte r, byte g, byte b, byte a)
 {
     public byte R = r, G = g, B = b, A = a;
 
@@ -12,6 +12,8 @@ public class Color(byte r, byte g, byte b, byte a)
     
     internal SFML.Graphics.Color ToSfmlColor() =>
         new(R, G, B, A);
+    
+    public override int GetHashCode() => ( R << 24 ) | ( G << 16 ) | ( B << 8 ) | A;
 
     public Color(byte r, byte g, byte b) : this(r, g, b, 255) { }
     public Color(uint value) : this(
