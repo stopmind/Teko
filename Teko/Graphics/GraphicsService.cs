@@ -73,10 +73,13 @@ public class GraphicsService : AService
             if (call.Context != null)
                 return call.Context.LayerIndex;
             return 0;
-        }).ToArray();
+        }).ToDictionary(calls => calls.Key, calls => calls.ToArray());
 
-        for (var i = 0; i < layers.Length; i++)
+        for (var i = 0; i < _views.Count; i++)
         {
+            if (layers.ContainsKey(i))
+                continue;
+            
             var layerCalls = layers[i].ToList();
             layerCalls.Sort((call1, call2) =>
             {
