@@ -9,7 +9,6 @@ public class Game
     private readonly GameInner _inner;
     private readonly Backend _backend;
     private readonly Dictionary<Type, AService> _services = new();
-    private readonly Clock _deltaClock = new();
 
     private Scene? _scene;
     
@@ -23,15 +22,15 @@ public class Game
         }
     }
 
-    private void Update()
+    private void Update(float delta)
     {
-        Scene?.Update(_deltaClock.ElapsedTime.AsSeconds());
+        Scene?.Update(delta);
         _inner.CallUpdate();
     }
     
-    private void Draw()
+    private void Draw(float delta)
     {
-        Scene?.Draw(_deltaClock.ElapsedTime.AsSeconds());
+        Scene?.Draw(delta);
         _inner.CallDraw();
     }
     
@@ -43,13 +42,14 @@ public class Game
 
         window.Closed += (_, _) => _scene?.OnClose();
 
-        _deltaClock.Restart();
+        var deltaClock = new Clock();
         while (_backend.Window.IsOpen)
         {
-            Update();
+            var delta = deltaClock.ElapsedTime.AsSeconds();
+            deltaClock.Restart();
             
-            Draw();
-            _deltaClock.Restart();
+            Update(delta);
+            Draw(delta);
             
             window.Display();
             window.DispatchEvents();
