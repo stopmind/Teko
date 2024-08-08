@@ -77,7 +77,7 @@ public class GraphicsService : AService
 
         for (var i = 0; i < _views.Count; i++)
         {
-            if (layers.ContainsKey(i))
+            if (!layers.ContainsKey(i))
                 continue;
             
             var layerCalls = layers[i].ToList();

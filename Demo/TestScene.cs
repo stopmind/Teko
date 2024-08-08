@@ -16,7 +16,7 @@ public class TestScene : Scene
     public override void Ready()
     {
         _graphics = Game.GetService<GraphicsService>();
-        _graphics.SetLayersCount(1);
+        _graphics.SetLayersCount(2);
         _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
         
         _input = Game.GetService<Input>();
@@ -40,6 +40,9 @@ public class TestScene : Scene
 
     public override void Draw(float delta)
     {
+        _graphics!.SetContext(new DrawContext(0,0));
+        _graphics!.DrawRect(new RectF(Vector2f.One * 25, new Vector2f(64, 64)), Color.White, _texture);
+        _graphics!.SetContext(new DrawContext(1,0));
         _graphics!.DrawRect(new RectF(_pos, new Vector2f(64, 64)), Color.White, _texture);
     }
 
