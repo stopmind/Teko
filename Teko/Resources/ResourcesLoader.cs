@@ -57,4 +57,24 @@ public class ResourcesLoader(string[] paths) : AService
         
         return default;
     }
+
+    public string[] ListFilesAt(string path)
+    {
+        var result = new List<string>();
+
+        foreach (var pack in _packs)
+            result.AddRange(pack.ListFilesAt(path));
+
+        return result.ToArray();
+    }
+
+    public string[] ListDirsAt(string path)
+    {
+        var result = new List<string>();
+
+        foreach (var pack in _packs)
+            result.AddRange(pack.ListDirsAt(path));
+
+        return result.ToArray();
+    }
 }
