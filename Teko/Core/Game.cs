@@ -18,7 +18,15 @@ public class Game
         set
         {
             _scene = value;
-            _scene?.Setup(this);
+            try
+            {
+                _scene?.Setup(this);
+            }
+            catch
+            {
+                Exit();
+                throw;
+            }
         }
     }
 
@@ -36,6 +44,7 @@ public class Game
     
     public void Run()
     {
+        
         var window = _backend.Window;
         
         window.SetFramerateLimit(120);
@@ -43,16 +52,24 @@ public class Game
         window.Closed += (_, _) => _scene?.OnClose();
 
         var deltaClock = new Clock();
-        while (_backend.Window.IsOpen)
+        try
         {
-            var delta = deltaClock.ElapsedTime.AsSeconds();
-            deltaClock.Restart();
-            
-            Update(delta);
-            Draw(delta);
-            
-            window.Display();
-            window.DispatchEvents();
+            while (_backend.Window.IsOpen)
+            {
+                var delta = deltaClock.ElapsedTime.AsSeconds();
+                deltaClock.Restart();
+
+                Update(delta);
+                Draw(delta);
+
+                window.Display();
+                window.DispatchEvents();
+            }
+        }
+        catch
+        {
+            Exit();
+            throw;
         }
     }
 
