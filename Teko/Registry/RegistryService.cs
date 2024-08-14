@@ -17,7 +17,7 @@ public class RegistryService : AService
 
     public void Load(LoadConfig config)
     {
-        foreach (var (domainName, paths) in config.DomainsLoadPaths)
+        foreach (var (domainName, paths) in config.Paths)
         {
             _domains.TryGetValue(domainName, out var domain);
             if (domain == null)

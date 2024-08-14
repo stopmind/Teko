@@ -6,24 +6,21 @@ namespace Teko.Registry;
 
 public class LoadConfig : IResource
 {
-    public readonly Dictionary<string, string[]> DomainsLoadPaths;
+    public readonly Dictionary<string, string[]> Paths;
     public readonly string Prefix;
     
     public static dynamic Load(ResourcesLoader loader, Stream stream)
     {
         var reader = new StreamReader(stream);
-        var data = JsonConvert.DeserializeObject<JObject>(reader.ReadToEnd())!;
+        var text = reader.ReadToEnd();
         reader.Close();
-        
-        return new LoadConfig(
-            data["Paths"]!.Value<Dictionary<string, string[]>>()!,
-            data["Prefix"]!.Value<string>()!
-        );
+
+        return JsonConvert.DeserializeObject<LoadConfig>(text)!;
     }
 
-    private LoadConfig(Dictionary<string, string[]> domainsLoadPaths, string prefix)
+    public LoadConfig(Dictionary<string, string[]> paths, string prefix)
     {
-        DomainsLoadPaths = domainsLoadPaths;
+        Paths = paths;
         Prefix = prefix;
     }
 }
