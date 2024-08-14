@@ -31,9 +31,8 @@ public class RegistryService : AService
             foreach (var path in paths)
             {
                 var files = _loader!.ListFilesAt(path);
-                count += files.Length;
                 foreach (var file in files)
-                    domain.Load(_loader!, Path.Combine(path, file), config.Prefix);
+                    if (domain.Load(_loader!, Path.Combine(path, file), config.Prefix)) count++;
             }
             
             _logger!.Info($"Registry: Loaded new resources for domain \"{domainName}\" ({count})");

@@ -7,12 +7,13 @@ public class Domain<T> : IDomain where T : IResource
 {
     private Dictionary<string, T> _resources = new();
     
-    public void Load(ResourcesLoader loader, string file, string prefix)
+    public bool Load(ResourcesLoader loader, string file, string prefix)
     {
         var resource = loader.LoadResource<T>(file);
         if (resource == null) 
-            return;
+            return false;
         _resources.Add(prefix + Path.GetFileName(file).Split(".")[0], resource);
+        return true;
     }
 
     public T? Get(string name)
