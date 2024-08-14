@@ -7,7 +7,7 @@ public class Logger(string path) : AService
     
     protected override void OnSetup()
     {
-        var file = new StreamWriter(File.OpenWrite(path));
+        var file = File.CreateText(path);
         OnLog += (type, text) =>
         {
             var typeLabel = "";
@@ -18,10 +18,10 @@ public class Logger(string path) : AService
                     typeLabel = "Error";
                     break;
                 case LogType.Info:
-                    typeLabel = " Info ";
+                    typeLabel = "Info ";
                     break;
                 case LogType.Warning:
-                    typeLabel = " Warn ";
+                    typeLabel = "Warn ";
                     break;
             }
 
