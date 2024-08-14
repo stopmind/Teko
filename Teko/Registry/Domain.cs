@@ -8,7 +8,12 @@ public class Domain<T> : IDomain where T : IResource
     private Dictionary<string, T> _resources = new();
     
     public void Load(ResourcesLoader loader, string file, string prefix)
-        => _resources.Add(prefix + Path.GetFileName(file).Split(".")[0], loader.LoadResource<T>(file)!);
+    {
+        var resource = loader.LoadResource<T>(file);
+        if (resource == null) 
+            return;
+        _resources.Add(prefix + Path.GetFileName(file).Split(".")[0], resource);
+    }
 
     public T? Get(string name)
     {
