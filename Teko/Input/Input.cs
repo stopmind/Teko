@@ -8,7 +8,7 @@ public class Input : AService
     private Dictionary<string, InputEvent> _events = new();
     protected override void OnSetup()
     {
-        GameInner.UpdateEvent += () =>
+        GameInner.UpdateEvent += (_) =>
         {
             foreach (var (_, inputEvent) in _events)
                 inputEvent.Update();

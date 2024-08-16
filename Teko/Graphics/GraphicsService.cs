@@ -63,7 +63,7 @@ public class GraphicsService : AService
     public Vector2i GetSize()
         => new((int)_target!.Size.X, (int)_target!.Size.Y);
     
-    private void Flush()
+    private void Flush(float _)
     {
         _target!.Clear(FillColor.ToSfmlColor());
         _context = null;

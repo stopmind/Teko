@@ -33,13 +33,13 @@ public class Game
     private void Update(float delta)
     {
         Scene?.Update(delta);
-        _inner.CallUpdate();
+        _inner.CallUpdate(delta);
     }
     
     private void Draw(float delta)
     {
         Scene?.Draw(delta);
-        _inner.CallDraw();
+        _inner.CallDraw(delta);
     }
     
     public void Run()
