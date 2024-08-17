@@ -6,6 +6,8 @@ namespace Teko.Graphics;
 public class Texture : IResource
 {
     internal SFML.Graphics.Texture SfmlTexture;
+
+    public Vector2i Size => new(SfmlTexture.Size);
     
     internal Texture(SFML.Graphics.Texture texture)
     {
@@ -13,7 +15,11 @@ public class Texture : IResource
     }
 
     public static dynamic Load(ResourcesLoader loader, Stream stream)
-        => new Texture(new SFML.Graphics.Texture(stream));
+    {
+        var tex = new Texture(new SFML.Graphics.Texture(stream));
+        stream.Close();
+        return tex;
+    }
 
     public Texture SubTexture(RectI rect)
     {

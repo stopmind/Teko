@@ -42,5 +42,6 @@ public struct Vector2i(int x, int y)
     public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
     internal Vector2i(SFML.System.Vector2i sfmlVec) : this(sfmlVec.X, sfmlVec.Y) { }
+    internal Vector2i(SFML.System.Vector2u sfmlVec) : this((int)sfmlVec.X, (int)sfmlVec.Y) { }
     public Vector2i(int a) : this(a, a) { }
 }

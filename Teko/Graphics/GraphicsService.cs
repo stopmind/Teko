@@ -1,104 +1,94 @@
 using SFML.Graphics;
+using SFML.System;
 using Teko.Core;
+using Vector2f = Teko.Core.Vector2f;
+using Vector2i = Teko.Core.Vector2i;
 
 namespace Teko.Graphics;
 
 public class GraphicsService : AService
 {
-    private RectangleShape _rectShape = new();
+    private Layer[] _layers = [];
+    private Layer? _currentLayer;
+
+    public void SetCurrentLayer(uint index)
+        => _currentLayer = _layers[index];
+
+    public void SetLayersCount(uint count)
+    {
+        var newLayers = new Layer[count];
+
+        for (var i = 0; i < Math.Min(_layers.Length, count); i++)
+            newLayers[i] = _layers[i];
+
+        for (var i = _layers.Length; i < count; i++)
+            newLayers[i] = new Layer(
+                GameInner.Backend.Window.Size.X,
+                GameInner.Backend.Window.Size.Y
+            );
+        
+        _layers = newLayers;
+    }
+
+    public Layer GetLayer(uint index)
+        => _layers[index];
+
+    private RectangleShape _rect = new();
     private Sprite _sprite = new();
-    
-    private DrawContext? _context;
-    private List<DrawCall> _calls = new();
-    private RenderTarget? _target;
-    private readonly List<View?> _views = new();
 
-    public Color FillColor = Color.Black;
-
-    protected override void OnSetup() {
-        GameInner.DrawEvent += Flush;
-        _target = GameInner.Backend.Window;
+    public void DrawRect(RectF rect, Color? color = null, Texture? texture = null, RectI? texRect = null)
+    {
+        _rect.FillColor = (color ?? Color.White).ToSfmlColor();
+        _rect.Texture = texture?.SfmlTexture;
+        _rect.Position = rect.Position.ToSfmlVec();
+        _rect.Size = rect.Position.ToSfmlVec();
+        if (texture != null)
+            _rect.TextureRect = (texRect ?? new RectI(Vector2i.Zero, texture.Size)).ToSfmlRect();
+        _currentLayer?.Texture.Draw(_rect);
     }
 
-    public void SetContext(DrawContext? context) =>
-        _context = context;
-
-    public void SetLayersCount(int count)
+    public void DrawSprite(Vector2f position, Texture texture, Color? color = null, Vector2f? scale = null, RectI? texRect = null)
     {
-        for (var i = _views.Count; i < count; i++)
-            _views.Add(null);
-    }
-
-    public void SetView(int layer, View? view)
-        => _views[layer] = view;
-
-    private void AddCall(Action func) =>
-        _calls.Add(new DrawCall(_context, func));
-
-    public void DrawRect(RectF rectF, Color color, Texture? texture)
-    {
-        AddCall(() =>
-        {
-            _rectShape.Position = rectF.Position.ToSfmlVec();
-            _rectShape.Size = rectF.Size.ToSfmlVec();
-            _rectShape.Texture = texture?.SfmlTexture;
-            _rectShape.FillColor = color.ToSfmlColor();
-            
-            _target!.Draw(_rectShape);
-        });
-    }
-
-    public void DrawSprite(Vector2f position, Color color, Texture texture)
-    {
-        AddCall(() =>
-        {
-            _sprite.Position = position.ToSfmlVec();
-            _sprite.Color = color.ToSfmlColor();
-            _sprite.Texture = texture.SfmlTexture;
-            
-            _target!.Draw(_sprite);
-        });
+        _sprite.Position = position.ToSfmlVec();
+        _sprite.Texture = texture.SfmlTexture;
+        _sprite.Color = (color ?? Color.White).ToSfmlColor();
+        _sprite.Scale = (scale ?? Vector2f.One).ToSfmlVec();
+        _sprite.TextureRect = (texRect ?? new RectI(Vector2i.Zero, texture.Size)).ToSfmlRect();
+        _currentLayer?.Texture.Draw(_sprite);
     }
 
     public Vector2i GetSize()
-        => new((int)_target!.Size.X, (int)_target!.Size.Y);
+        => new(GameInner.Backend.Window.Size);
+
+    public Color FillColor = Color.Black;
     
-    private void Flush(float _)
+    protected override void OnSetup()
     {
-        _target!.Clear(FillColor.ToSfmlColor());
-        _context = null;
-
-        var layers = _calls.GroupBy(call =>
+        SetLayersCount(1);
+        SetCurrentLayer(0);
+        
+        var window = GameInner.Backend.Window;
+        var layerSprite = new Sprite();
+        
+        window.Resized += (_, args) =>
         {
-            if (call.Context != null)
-                return call.Context.LayerIndex;
-            return 0;
-        }).ToDictionary(calls => calls.Key, calls => calls.ToArray());
-
-        for (var i = 0; i < _views.Count; i++)
+            var size = new SFML.System.Vector2f(args.Width, args.Height);
+            window.SetView(new SFML.Graphics.View(size / 2, size));
+            foreach (var layer in _layers)
+                layer.Resize(args.Width, args.Height);
+            layerSprite.TextureRect = new IntRect(0, 0, (int)args.Width, (int)args.Height);
+        };
+        
+        GameInner.DrawEvent += _ =>
         {
-            if (!layers.ContainsKey(i))
-                continue;
-            
-            var layerCalls = layers[i].ToList();
-            layerCalls.Sort((call1, call2) =>
+            window.Clear(FillColor.ToSfmlColor());
+            foreach (var layer in _layers)
             {
-                var x = 0f;
-                if (call1.Context != null) x = call1.Context.ZIndex;
-                var y = 0f;
-                if (call2.Context != null) y = call2.Context.ZIndex;
-
-                if (x > y)      return 1;
-                else if (x < y) return -1;
-                else            return 0;
-            });
-            
-            _target.SetView(_views[i] == null ? _target.DefaultView : _views[i]!.ToSfmlView());
-            
-            foreach (var call in layerCalls)
-                call.Func();
-        }
-
-        _calls.Clear();
+                layer.Texture.Display();
+                layerSprite.Texture = layer.Texture.Texture;
+                window.Draw(layerSprite);
+                layer.Texture.Clear(SFML.Graphics.Color.Transparent);
+            }
+        };
     }
 }

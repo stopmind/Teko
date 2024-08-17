@@ -10,20 +10,31 @@ public class TestScene : Scene
     private GraphicsService? _graphics;
     private Input? _input;
     private Texture? _texture;
-    private Vector2f _pos = new(0,0);
-    private float _speed = 40f;
+    private View _view = new(Vector2f.Zero, Vector2f.One);
+    private float _speed = 160f;
     
     public override void Ready()
     {
         _graphics = Game.GetService<GraphicsService>();
+        _graphics.SetLayersCount(6);
         _graphics.SetLayersCount(2);
-        _texture = Game.GetService<ResourcesLoader>().LoadResource<Texture>("A.png");
+        
+        var resources = Game.GetService<ResourcesLoader>();
+        _texture = resources.LoadResource<Texture>("A.png");
         
         _input = Game.GetService<Input>();
         _input.SetKeyboardEvent("playerUp", Key.W);
         _input.SetKeyboardEvent("playerLeft", Key.A);
         _input.SetKeyboardEvent("playerDown", Key.S);
         _input.SetKeyboardEvent("playerRight", Key.D);
+        
+        _view.Size = _graphics!.GetSize().ToFloat();
+
+        for (var i = 0; i < 10000; i++)
+        {
+            var vec2 = new Vector2f(i % 5, 4);
+            Console.WriteLine(vec2 * 2);
+        }
     }
 
     public override void Update(float delta)
@@ -35,15 +46,17 @@ public class TestScene : Scene
         if (_input!.IsDown("playerLeft"))  move.X--;
         if (_input!.IsDown("playerRight")) move.X++;
         
-        _pos += move.Normalize() * delta * _speed;
+        _view.Center += move.Normalize() * delta * _speed;
+        _view.Size = _graphics!.GetSize().ToFloat();
+        _graphics!.GetLayer(0).View = _view;
     }
 
     public override void Draw(float delta)
     {
-        _graphics!.SetContext(new DrawContext(0,0));
-        _graphics!.DrawRect(new RectF(Vector2f.One * 25, new Vector2f(64, 64)), Color.White, _texture);
-        _graphics!.SetContext(new DrawContext(1,0));
-        _graphics!.DrawRect(new RectF(_pos, new Vector2f(64, 64)), Color.White, _texture);
+        _graphics!.SetCurrentLayer(0);
+        _graphics!.DrawSprite(Vector2f.Zero, _texture!, scale: new Vector2f(2));
+        _graphics!.SetCurrentLayer(1);
+        _graphics!.DrawSprite(_graphics!.GetSize().ToFloat() / 2 - _texture!.Size.ToFloat(), _texture!, scale: new Vector2f(2));
     }
 
     public override void OnClose()
