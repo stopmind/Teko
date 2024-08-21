@@ -10,6 +10,7 @@ public class TestScene : Scene
     private GraphicsService? _graphics;
     private Input? _input;
     private Texture? _texture;
+    private Font? _font;
     private View _view = new(Vector2f.Zero, Vector2f.One);
     private float _speed = 160f;
     
@@ -21,6 +22,8 @@ public class TestScene : Scene
         
         var resources = Game.GetService<ResourcesLoader>();
         _texture = resources.LoadResource<Texture>("A.png");
+        _font = resources.LoadResource<Font>("Monocraft.ttf");
+        _font!.Smooth = false;
         
         _input = Game.GetService<Input>();
         _input.SetKeyboardEvent("playerUp", Key.W);
@@ -29,12 +32,6 @@ public class TestScene : Scene
         _input.SetKeyboardEvent("playerRight", Key.D);
         
         _view.Size = _graphics!.GetSize().ToFloat();
-
-        for (var i = 0; i < 10000; i++)
-        {
-            var vec2 = new Vector2f(i % 5, 4);
-            Console.WriteLine(vec2 * 2);
-        }
     }
 
     public override void Update(float delta)
@@ -57,6 +54,7 @@ public class TestScene : Scene
         _graphics!.DrawSprite(Vector2f.Zero, _texture!, scale: new Vector2f(2));
         _graphics!.SetCurrentLayer(1);
         _graphics!.DrawSprite(_graphics!.GetSize().ToFloat() / 2 - _texture!.Size.ToFloat(), _texture!, scale: new Vector2f(2));
+        _graphics!.DrawText(Vector2f.Zero, _font!, $"X: {_view.Center.X:0.0}\nY: {_view.Center.Y:0.0}", 32);
     }
 
     public override void OnClose()

@@ -57,6 +57,14 @@ public class GraphicsService : AService
         _currentLayer?.Texture.Draw(_sprite);
     }
 
+    public void DrawText(Vector2f position, Font font, string content, uint size = 16, Color? color = null)
+    {
+        var text = new Text(content, font.SfmlFont, size);
+        text.Position = position.ToSfmlVec();
+        text.FillColor = (color ?? Color.White).ToSfmlColor();
+        _currentLayer?.Texture.Draw(text);
+    }
+
     public Vector2i GetSize()
         => new(GameInner.Backend.Window.Size);
 

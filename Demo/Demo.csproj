@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Teko\Teko.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SFML.Net" Version="2.6.0" />
+    </ItemGroup>
+
 </Project>
