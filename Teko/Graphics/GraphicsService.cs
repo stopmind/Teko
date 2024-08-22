@@ -41,7 +41,7 @@ public class GraphicsService : AService
         _rect.FillColor = (color ?? Color.White).ToSfmlColor();
         _rect.Texture = texture?.SfmlTexture;
         _rect.Position = rect.Position.ToSfmlVec();
-        _rect.Size = rect.Position.ToSfmlVec();
+        _rect.Size = rect.Size.ToSfmlVec();
         if (texture != null)
             _rect.TextureRect = (texRect ?? new RectI(Vector2i.Zero, texture.Size)).ToSfmlRect();
         _currentLayer?.Texture.Draw(_rect);
