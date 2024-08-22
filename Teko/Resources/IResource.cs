@@ -1,6 +1,8 @@
-﻿namespace Teko.Resources;
+﻿using Teko.Core;
+
+namespace Teko.Resources;
 
 public interface IResource
 { 
-    static abstract dynamic Load(ResourcesLoader loader, Stream stream);
+    static abstract dynamic Load(Game game, Stream stream);
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Teko.Core;
 using Teko.Resources;
 
 namespace Teko.Registry;
@@ -9,7 +10,7 @@ public class LoadConfig : IResource
     public readonly Dictionary<string, string[]> Paths;
     public readonly string Prefix;
     
-    public static dynamic Load(ResourcesLoader loader, Stream stream)
+    public static dynamic Load(Game game, Stream stream)
     {
         var reader = new StreamReader(stream);
         var text = reader.ReadToEnd();

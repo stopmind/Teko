@@ -1,10 +1,11 @@
-﻿using Teko.Resources;
+﻿using Teko.Core;
+using Teko.Resources;
 
 namespace Teko.Graphics;
 
 public class Font : IResource
 {
-    public static dynamic Load(ResourcesLoader loader, Stream stream) 
+    public static dynamic Load(Game game, Stream stream) 
         =>new Font(new BaseFont(stream));
 
     internal SFML.Graphics.Font SfmlFont;

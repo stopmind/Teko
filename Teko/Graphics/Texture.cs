@@ -14,7 +14,7 @@ public class Texture : IResource
         SfmlTexture = texture;
     }
 
-    public static dynamic Load(ResourcesLoader loader, Stream stream)
+    public static dynamic Load(Game game, Stream stream)
     {
         var tex = new Texture(new SFML.Graphics.Texture(stream));
         stream.Close();
