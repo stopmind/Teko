@@ -29,4 +29,6 @@ public class Input : AService
     
     public bool IsPressed(string id)
         => _events[id].State == InputState.Pressed;
+    
+    public Vector2i GetMousePos() => new(Mouse.GetPosition(GameInner.Backend.Window));
 }
