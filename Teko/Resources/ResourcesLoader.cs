@@ -1,16 +1,15 @@
 ﻿using Teko.Core;
+using Teko.Inject;
 
 namespace Teko.Resources;
 
 public class ResourcesLoader(string[] paths) : AService
 {
     private List<ResourcesPack> _packs = new();
-    private Logger? _logger;
+    [Inject] private Logger? _logger;
     
     protected override void OnSetup()
     {
-        _logger = Game.GetService<Logger>();
-        
         foreach (var path in paths)
         {
             foreach (var root in Directory.GetDirectories(path))

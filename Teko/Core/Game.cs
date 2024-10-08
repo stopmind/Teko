@@ -1,14 +1,16 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using Teko.Inject;
 
 namespace Teko.Core;
 
-public class Game
+public class Game : ISource
 {
     private readonly GameInner _inner;
     private readonly Backend _backend;
     private readonly Dictionary<Type, AService> _services = new();
+    private readonly Injector _injector;
 
     private Scene? _scene;
     
@@ -18,15 +20,23 @@ public class Game
         set
         {
             _scene = value;
+#if !DEBUG
             try
             {
-                _scene?.Setup(this);
+#endif
+                if (_scene != null)
+                {
+                    _injector.Inject(_scene);
+                    _scene.Setup(this);
+                }
+#if !DEBUG
             }
             catch
             {
                 Exit();
                 throw;
             }
+#endif
         }
     }
 
@@ -44,7 +54,6 @@ public class Game
     
     public void Run()
     {
-        
         var window = _backend.Window;
         
         window.SetFramerateLimit(120);
@@ -84,6 +93,7 @@ public class Game
         if (!_services.TryAdd(aService.GetType(), aService))
             throw new Exception("Failed add service");
         
+        _injector.Inject(aService);
         aService.Setup(this, _inner);
     }
     
@@ -105,5 +115,19 @@ public class Game
     {
         _backend = new Backend(new RenderWindow(new VideoMode(width, height), title));
         _inner = new GameInner(_backend);
+        _injector = new Injector([this]);
+    }
+
+    public object? GetValue(Type type)
+    {
+        if (type == typeof(Scene))
+            return Scene;
+
+        if (type.BaseType == typeof(AService))
+            if (_services.TryGetValue(type, out var service))
+                return service;
+            else return null;
+
+        return null;
     }
 }

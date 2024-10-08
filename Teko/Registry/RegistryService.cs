@@ -1,4 +1,5 @@
 ﻿using Teko.Core;
+using Teko.Inject;
 using Teko.Resources;
 
 namespace Teko.Registry;
@@ -6,13 +7,12 @@ namespace Teko.Registry;
 public class RegistryService : AService
 {
     private Dictionary<string, IDomain> _domains = new();
-    private ResourcesLoader? _loader;
-    private Logger? _logger;
+    [Inject] private ResourcesLoader? _loader;
+    [Inject] private Logger? _logger;
     
     protected override void OnSetup()
     {
-        _loader = Game.GetService<ResourcesLoader>();
-        _logger = Game.GetService<Logger>();
+        
     }
 
     public void Load(LoadConfig config)

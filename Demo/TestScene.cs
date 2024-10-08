@@ -1,5 +1,6 @@
 using Teko.Core;
 using Teko.Graphics;
+using Teko.Inject;
 using Teko.Input;
 using Teko.Resources;
 
@@ -7,8 +8,8 @@ namespace Demo;
 
 public class TestScene : Scene
 {
-    private GraphicsService? _graphics;
-    private Input? _input;
+    [Inject] private GraphicsService? _graphics;
+    [Inject] private Input? _input;
     private Texture? _texture;
     private Font? _font;
     private View _view = new(Vector2f.Zero, Vector2f.One);
@@ -16,8 +17,7 @@ public class TestScene : Scene
     
     public override void Ready()
     {
-        _graphics = Game.GetService<GraphicsService>();
-        _graphics.SetLayersCount(6);
+        _graphics!.SetLayersCount(6);
         _graphics.SetLayersCount(2);
         
         var resources = Game.GetService<ResourcesLoader>();
@@ -25,8 +25,7 @@ public class TestScene : Scene
         _font = resources.LoadResource<Font>("Monocraft.ttf");
         _font!.Smooth = false;
         
-        _input = Game.GetService<Input>();
-        _input.SetKeyboardEvent("playerUp", Key.W);
+        _input!.SetKeyboardEvent("playerUp", Key.W);
         _input.SetKeyboardEvent("playerLeft", Key.A);
         _input.SetKeyboardEvent("playerDown", Key.S);
         _input.SetKeyboardEvent("playerRight", Key.D);
