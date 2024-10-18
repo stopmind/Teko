@@ -1,5 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 using Teko.Core;
 using Vector2f = Teko.Core.Vector2f;
 using Vector2i = Teko.Core.Vector2i;
@@ -69,6 +70,15 @@ public class GraphicsService : AService
         => new(GameInner.Backend.Window.Size);
 
     public Color FillColor = Color.Black;
+
+    public void SetFullscrean(bool isFullscrean)
+    {
+        GameInner.Backend.Window.Close();
+        if (isFullscrean)
+            GameInner.Backend.Window = new RenderWindow(new VideoMode(), Game.Title, Styles.Fullscreen);
+        else
+            GameInner.Backend.Window = new RenderWindow(new VideoMode(), Game.Title);
+    }
     
     protected override void OnSetup()
     {

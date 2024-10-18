@@ -4,5 +4,5 @@ namespace Teko.Core;
 
 internal class Backend(RenderWindow window)
 {
-    public readonly RenderWindow Window = window;
+    public RenderWindow Window = window;
 }

@@ -13,6 +13,8 @@ public class Game : ISource
     private readonly Injector _injector;
 
     private Scene? _scene;
+
+    public readonly string Title;
     
     public Scene? Scene
     {
@@ -116,6 +118,7 @@ public class Game : ISource
         _backend = new Backend(new RenderWindow(new VideoMode(width, height), title));
         _inner = new GameInner(_backend);
         _injector = new Injector([this]);
+        Title = title;
     }
 
     public object? GetValue(Type type)
