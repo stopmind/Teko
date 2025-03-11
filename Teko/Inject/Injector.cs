@@ -2,9 +2,9 @@
 
 namespace Teko.Inject;
 
-public class Injector
+public class Injector(List<ISource> sources)
 {
-    private ISource[] _sources;
+    public List<ISource> Sources = sources;
 
     public void Inject(object target)
     {
@@ -16,7 +16,7 @@ public class Injector
         foreach (var field in fields)
         {
             var injected = false;
-            foreach (var source in _sources)
+            foreach (var source in Sources)
             {
                 var value = source.GetValue(field.FieldType);
 
@@ -31,10 +31,5 @@ public class Injector
             if (!injected)
                 throw new Exception($"Failed inject field {field.Name}");
         }
-    }
-    
-    public Injector(ISource[] sources)
-    {
-        _sources = sources;
     }
 }

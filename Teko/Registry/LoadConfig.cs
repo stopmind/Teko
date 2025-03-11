@@ -5,12 +5,12 @@ using Teko.Resources;
 
 namespace Teko.Registry;
 
-public class LoadConfig : IResource
+public class LoadConfig
 {
     public readonly Dictionary<string, string[]> Paths;
     public readonly string Prefix;
     
-    public static dynamic Load(Game game, Stream stream)
+    public static dynamic Load(Stream stream)
     {
         var reader = new StreamReader(stream);
         var text = reader.ReadToEnd();

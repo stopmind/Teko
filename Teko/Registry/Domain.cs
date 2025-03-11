@@ -3,7 +3,7 @@ using Teko.Resources;
 
 namespace Teko.Registry;
 
-public class Domain<T> : IDomain where T : IResource
+public class Domain<T> : IDomain where T : class
 {
     private Dictionary<string, T> _resources = new();
     
@@ -15,6 +15,9 @@ public class Domain<T> : IDomain where T : IResource
         _resources.Add(prefix + Path.GetFileName(file).Split(".")[0], resource);
         return true;
     }
+
+    public void Add(string name, T resource)
+        => _resources[name] = resource;
 
     public T? Get(string name)
     {

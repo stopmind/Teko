@@ -1,14 +1,32 @@
-﻿using Teko.Core;
+﻿using System.Reflection;
+using SFML.Audio;
+using SFML.Graphics;
+using Teko.Core;
 using Teko.Inject;
 
 namespace Teko.Resources;
 
 public class ResourcesLoader(string[] paths) : AService
 {
+    private Dictionary<Type, IResourceImporter> _importers = new();
+    private Dictionary<Type, Type> _associatedResources = new();
+    
     private List<ResourcesPack> _packs = new();
     [Inject] private Logger? _logger;
     
     protected override void OnSetup()
+    {
+        AddImporter(new SFMLResourcesImporter());
+        
+        AddAssociatedResource<SFMLResourcesImporter, Texture>();
+        AddAssociatedResource<SFMLResourcesImporter, Font>();
+        AddAssociatedResource<SFMLResourcesImporter, Music>();
+        AddAssociatedResource<SFMLResourcesImporter, Sound>();
+        
+        Reload();
+    }
+
+    public void Reload()
     {
         foreach (var path in paths)
         {
@@ -30,8 +48,10 @@ public class ResourcesLoader(string[] paths) : AService
         _packs.Sort((aPack, bPack) => aPack.Priority - bPack.Priority);
     }
 
-    public TResource? LoadResource<TResource>(string path) where TResource : IResource
+    public TResource? LoadResource<TResource>(string path) where TResource : class
     {
+        var importer = GetResourceImporter<TResource>();
+        
         foreach (var pack in _packs)
         {
             var stream = pack.GetFile(path);
@@ -44,7 +64,7 @@ public class ResourcesLoader(string[] paths) : AService
 
             try
             {
-                return TResource.Load(Game, stream);
+                return importer.ImportResource<TResource>(stream);
             }
             catch (Exception exception)
             {
@@ -75,5 +95,31 @@ public class ResourcesLoader(string[] paths) : AService
             result.AddRange(pack.ListDirsAt(path));
 
         return result.ToArray();
+    }
+
+    public void AddImporter<TImporter>(TImporter importer) where TImporter : IResourceImporter
+        => _importers[typeof(TImporter)] = importer;
+
+    public void AddAssociatedResource<TImporter, TResource>() where TImporter : IResourceImporter
+        => _associatedResources[typeof(TResource)] = typeof(TImporter);
+    
+    public IResourceImporter GetResourceImporter<TResource>()
+    {
+        var type = typeof(TResource);
+        
+        if (_associatedResources.TryGetValue(type, out var importerType))
+            return _importers[importerType];
+
+        Type? importer = null;
+        
+        if (type.IsAssignableTo(typeof(IKnownImporter)))
+            importer = (Type?)type.InvokeMember(nameof(IKnownImporter.GetImporterType), BindingFlags.Static, null, null, [])!;
+
+        if (importer == null)
+            throw new Exception($"A resource '{type.Name}' not have associated importer.");
+
+        _associatedResources[type] = importer;
+
+        return _importers[importer];
     }
 }

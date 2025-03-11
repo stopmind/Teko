@@ -3,8 +3,4 @@
 using Demo;
 using Teko.Utils;
 
-new GameBuilder()
-    .StdServices(["Content"], "game.log")
-    .Window(800, 450, "Teko Demo")
-    .Scene(new TestScene())
-    .Run();
+Init.Run(800, 450, "Teko Demo", new TestScene());

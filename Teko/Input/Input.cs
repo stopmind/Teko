@@ -1,4 +1,5 @@
-﻿using SFML.Window;
+﻿using SFML.System;
+using SFML.Window;
 using Teko.Core;
 
 namespace Teko.Input;
@@ -6,6 +7,7 @@ namespace Teko.Input;
 public class Input : AService
 {
     private Dictionary<string, InputEvent> _events = new();
+    
     protected override void OnSetup()
     {
         GameInner.UpdateEvent += (_) =>
@@ -30,5 +32,6 @@ public class Input : AService
     public bool IsPressed(string id)
         => _events[id].State == InputState.Pressed;
     
-    public Vector2i GetMousePos() => new(Mouse.GetPosition(GameInner.Backend.Window));
+    public Vector2i GetMousePos() 
+        => Mouse.GetPosition(GameInner.RenderWindow);
 }

@@ -2,7 +2,8 @@
 
 namespace Teko.Resources;
 
-public interface IResource
-{ 
-    static abstract dynamic Load(Game game, Stream stream);
+public interface IResource<TImporter>: IKnownImporter where TImporter: IResourceImporter
+{
+    new static Type GetImporterType()
+        => typeof(TImporter);
 }

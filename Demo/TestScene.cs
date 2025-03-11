@@ -1,3 +1,5 @@
+using SFML.Graphics;
+using SFML.System;
 using Teko.Core;
 using Teko.Graphics;
 using Teko.Inject;
@@ -12,7 +14,7 @@ public class TestScene : Scene
     [Inject] private Input? _input;
     private Texture? _texture;
     private Font? _font;
-    private View _view = new(Vector2f.Zero, Vector2f.One);
+    private View _view = new(Vector2fC.Zero, Vector2fC.One);
     private float _speed = 160f;
     
     public override void Ready()
@@ -23,7 +25,7 @@ public class TestScene : Scene
         var resources = Game.GetService<ResourcesLoader>();
         _texture = resources.LoadResource<Texture>("A.png");
         _font = resources.LoadResource<Font>("Monocraft.ttf");
-        _font!.Smooth = false;
+        _font!.SetSmooth(false);
         
         _input!.SetKeyboardEvent("playerUp", Key.W);
         _input.SetKeyboardEvent("playerLeft", Key.A);
@@ -50,10 +52,10 @@ public class TestScene : Scene
     public override void Draw(float delta)
     {
         _graphics!.SetCurrentLayer(0);
-        _graphics!.DrawSprite(Vector2f.Zero, _texture!, scale: new Vector2f(2));
+        _graphics!.DrawSprite(Vector2fC.Zero, _texture!, scale: new Vector2f(2, 2));
         _graphics!.SetCurrentLayer(1);
-        _graphics!.DrawSprite(_graphics!.GetSize().ToFloat() / 2 - _texture!.Size.ToFloat(), _texture!, scale: new Vector2f(2));
-        _graphics!.DrawText(Vector2f.Zero, _font!, $"X: {_view.Center.X:0.0}\nY: {_view.Center.Y:0.0}", 32);
+        _graphics!.DrawSprite(_graphics!.GetSize().ToFloat() / 2 - _texture!.Size.ToFloat(), _texture!, scale: new Vector2f(2, 2));
+        _graphics!.DrawText(Vector2fC.Zero, _font!, $"X: {_view.Center.X:0.0}\nY: {_view.Center.Y:0.0}", 32);
     }
 
     public override void OnClose()

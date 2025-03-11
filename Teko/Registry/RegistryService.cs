@@ -39,14 +39,14 @@ public class RegistryService : AService
         }
     }
 
-    public Domain<T> NewDomain<T>(string name) where T : IResource
+    public Domain<T> NewDomain<T>(string name) where T : class
     {
         var domain = new Domain<T>();
         _domains.Add(name, domain);
         return domain;
     }
     
-    public Domain<T>? GetDomain<T>(string name) where T : IResource
+    public Domain<T>? GetDomain<T>(string name) where T : class
     {
         _domains.TryGetValue(name, out var result);
         return (Domain<T>?)result;

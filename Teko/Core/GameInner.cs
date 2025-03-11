@@ -1,10 +1,12 @@
+using SFML.Graphics;
+
 namespace Teko.Core;
 
 
 public delegate void ActionWithDelta(float delta);
 public class GameInner
 {
-    internal readonly Backend Backend;
+    public RenderWindow? RenderWindow;
 
     public event ActionWithDelta? UpdateEvent;
     public event ActionWithDelta? DrawEvent;
@@ -13,9 +15,4 @@ public class GameInner
     internal void CallUpdate(float delta) => UpdateEvent?.Invoke(delta);
     internal void CallDraw(float delta) => DrawEvent?.Invoke(delta);
     internal void CallExit() => ExitEvent?.Invoke();
-    
-    internal GameInner(Backend backend)
-    {
-        Backend = backend;
-    }
 }

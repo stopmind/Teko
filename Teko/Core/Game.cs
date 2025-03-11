@@ -5,18 +5,15 @@ using Teko.Inject;
 
 namespace Teko.Core;
 
-public class Game : ISource
+public static class Game
 {
-    private readonly GameInner _inner;
-    private readonly Backend _backend;
-    private readonly Dictionary<Type, AService> _services = new();
-    private readonly Injector _injector;
+    private static readonly GameInner Inner = new();
+    private static readonly Dictionary<Type, AService> Services = new();
+    private static readonly Injector Injector = new([new ServicesSource()]);
 
-    private Scene? _scene;
-
-    public readonly string Title;
+    private static Scene? _scene;
     
-    public Scene? Scene
+    public static Scene? Scene
     {
         get => _scene;
         set
@@ -28,8 +25,8 @@ public class Game : ISource
 #endif
                 if (_scene != null)
                 {
-                    _injector.Inject(_scene);
-                    _scene.Setup(this);
+                    Injector.Inject(_scene);
+                    _scene.Ready();
                 }
 #if !DEBUG
             }
@@ -42,30 +39,35 @@ public class Game : ISource
         }
     }
 
-    private void Update(float delta)
+    public static string Title { get; private set; }
+
+    private static void Update(float delta)
     {
         Scene?.Update(delta);
-        _inner.CallUpdate(delta);
+        Inner.CallUpdate(delta);
     }
     
-    private void Draw(float delta)
+    private static void Draw(float delta)
     {
         Scene?.Draw(delta);
-        _inner.CallDraw(delta);
+        Inner.CallDraw(delta);
     }
     
-    public void Run()
+    public static void Run()
     {
-        var window = _backend.Window;
+        var window = Inner.RenderWindow;
         
-        window.SetFramerateLimit(120);
+        if (window == null)
+            return;
+        
+        window.SetFramerateLimit(60);
 
         window.Closed += (_, _) => _scene?.OnClose();
 
         var deltaClock = new Clock();
         try
         {
-            while (_backend.Window.IsOpen)
+            while (window.IsOpen)
             {
                 var delta = deltaClock.ElapsedTime.AsSeconds();
                 deltaClock.Restart();
@@ -84,53 +86,44 @@ public class Game : ISource
         }
     }
 
-    public void Exit()
+    public static void Exit()
     {
-        _inner.CallExit();
-        _backend.Window.Close();
+        Inner.CallExit();
+        Inner.RenderWindow?.Close();
     }
 
-    public void AddService(AService aService)
+    public static void AddService(AService aService)
     {
-        if (!_services.TryAdd(aService.GetType(), aService))
+        if (!Services.TryAdd(aService.GetType(), aService))
             throw new Exception("Failed add service");
         
-        _injector.Inject(aService);
-        aService.Setup(this, _inner);
+        Injector.Inject(aService);
+        aService.Setup(Inner);
     }
     
-    public TService? TryGetService<TService>() where TService : AService
+    public static TService? TryGetService<TService>() where TService : AService
     {
-        _services.TryGetValue(typeof(TService), out var service);
+        Services.TryGetValue(typeof(TService), out var service);
         return (TService?)service;
     }
-    
-    public TService GetService<TService>() where TService : AService
+
+    public static AService? TryGetServiceByType(Type type)
     {
-        if (_services.TryGetValue(typeof(TService), out var service))
+        Services.TryGetValue(type, out var service);
+        return service;
+    }
+    
+    public static TService GetService<TService>() where TService : AService
+    {
+        if (Services.TryGetValue(typeof(TService), out var service))
             return (TService)service;
         
         throw new Exception("Failed get service");
     }
-    
-    public Game(uint width, uint height, string title)
+
+    public static void InitWindow(uint width, uint height, string title)
     {
-        _backend = new Backend(new RenderWindow(new VideoMode(width, height), title));
-        _inner = new GameInner(_backend);
-        _injector = new Injector([this]);
+        Inner.RenderWindow = new RenderWindow(new VideoMode(width, height), title);
         Title = title;
-    }
-
-    public object? GetValue(Type type)
-    {
-        if (type == typeof(Scene))
-            return Scene;
-
-        if (type.BaseType == typeof(AService))
-            if (_services.TryGetValue(type, out var service))
-                return service;
-            else return null;
-
-        return null;
     }
 }
