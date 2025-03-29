@@ -3,7 +3,7 @@ using SFML.Graphics;
 
 namespace Teko.Resources;
 
-public class SFMLResourcesImporter : IResourceImporter
+public class SfmlResourcesImporter : IResourceImporter
 {
     public TResource ImportResource<TResource>(Stream stream) where TResource : class
     {

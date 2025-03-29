@@ -16,12 +16,12 @@ public class ResourcesLoader(string[] paths) : AService
     
     protected override void OnSetup()
     {
-        AddImporter(new SFMLResourcesImporter());
+        AddImporter(new SfmlResourcesImporter());
         
-        AddAssociatedResource<SFMLResourcesImporter, Texture>();
-        AddAssociatedResource<SFMLResourcesImporter, Font>();
-        AddAssociatedResource<SFMLResourcesImporter, Music>();
-        AddAssociatedResource<SFMLResourcesImporter, Sound>();
+        AddAssociatedResource<SfmlResourcesImporter, Texture>();
+        AddAssociatedResource<SfmlResourcesImporter, Font>();
+        AddAssociatedResource<SfmlResourcesImporter, Music>();
+        AddAssociatedResource<SfmlResourcesImporter, Sound>();
         
         Reload();
     }
@@ -102,6 +102,7 @@ public class ResourcesLoader(string[] paths) : AService
 
     public void AddAssociatedResource<TImporter, TResource>() where TImporter : IResourceImporter
         => _associatedResources[typeof(TResource)] = typeof(TImporter);
+    
     
     public IResourceImporter GetResourceImporter<TResource>()
     {
