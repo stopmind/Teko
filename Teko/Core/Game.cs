@@ -7,8 +7,8 @@ namespace Teko.Core;
 
 public static class Game
 {
-    private static readonly GameInner Inner = new();
-    private static readonly Dictionary<Type, AService> Services = new();
+    private static GameInner _inner = new();
+    private static Dictionary<Type, AService> _services = new();
     private static readonly Injector Injector = new([new ServicesSource()]);
 
     private static Scene? _scene;
@@ -39,23 +39,23 @@ public static class Game
         }
     }
 
-    public static string Title { get; private set; }
+    public static string Title { get; private set; } = "";
 
     private static void Update(float delta)
     {
         Scene?.Update(delta);
-        Inner.CallUpdate(delta);
+        _inner.CallUpdate(delta);
     }
     
     private static void Draw(float delta)
     {
         Scene?.Draw(delta);
-        Inner.CallDraw(delta);
+        _inner.CallDraw(delta);
     }
     
     public static void Run()
     {
-        var window = Inner.RenderWindow;
+        var window = _inner.RenderWindow;
         
         if (window == null)
             return;
@@ -88,34 +88,34 @@ public static class Game
 
     public static void Exit()
     {
-        Inner.CallExit();
-        Inner.RenderWindow?.Close();
+        _inner.CallExit();
+        _inner.RenderWindow?.Close();
     }
 
     public static void AddService(AService aService)
     {
-        if (!Services.TryAdd(aService.GetType(), aService))
+        if (!_services.TryAdd(aService.GetType(), aService))
             throw new Exception("Failed add service");
         
         Injector.Inject(aService);
-        aService.Setup(Inner);
+        aService.Setup(_inner);
     }
     
     public static TService? TryGetService<TService>() where TService : AService
     {
-        Services.TryGetValue(typeof(TService), out var service);
+        _services.TryGetValue(typeof(TService), out var service);
         return (TService?)service;
     }
 
     public static AService? TryGetServiceByType(Type type)
     {
-        Services.TryGetValue(type, out var service);
+        _services.TryGetValue(type, out var service);
         return service;
     }
     
     public static TService GetService<TService>() where TService : AService
     {
-        if (Services.TryGetValue(typeof(TService), out var service))
+        if (_services.TryGetValue(typeof(TService), out var service))
             return (TService)service;
         
         throw new Exception("Failed get service");
@@ -123,7 +123,13 @@ public static class Game
 
     public static void InitWindow(uint width, uint height, string title)
     {
-        Inner.RenderWindow = new RenderWindow(new VideoMode(width, height), title);
+        _inner.RenderWindow = new RenderWindow(new VideoMode(width, height), title);
         Title = title;
+    }
+
+    public static void Reset()
+    {
+        _inner = new GameInner();
+        _services.Clear();
     }
 }
