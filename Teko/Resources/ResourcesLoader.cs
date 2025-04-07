@@ -10,9 +10,10 @@ public class ResourcesLoader(string[] paths) : AService
 {
     private Dictionary<Type, IResourceImporter> _importers = new();
     private Dictionary<Type, Type> _associatedResources = new();
-    
-    private List<ResourcesPack> _packs = new();
+
     [Inject] private Logger? _logger;
+    
+    public List<ResourcesPack> Packs = new();
     
     protected override void OnSetup()
     {
@@ -35,7 +36,7 @@ public class ResourcesLoader(string[] paths) : AService
                 try
                 {
                     var pack = new ResourcesPack(root);
-                    _packs.Add(pack);
+                    Packs.Add(pack);
                     _logger?.Info($"Resources: Detected new pack \"{pack.Name}\" at \"{root}\"");
                 }
                 catch (Exception exception)
@@ -45,14 +46,14 @@ public class ResourcesLoader(string[] paths) : AService
             }
         }
         
-        _packs.Sort((aPack, bPack) => aPack.Priority - bPack.Priority);
+        Packs.Sort((aPack, bPack) => aPack.Priority - bPack.Priority);
     }
 
     public TResource? LoadResource<TResource>(string path) where TResource : class
     {
         var importer = GetResourceImporter<TResource>();
         
-        foreach (var pack in _packs)
+        foreach (var pack in Packs.Where(pack => pack.Enabled))
         {
             var stream = pack.GetFile(path);
 
@@ -81,7 +82,7 @@ public class ResourcesLoader(string[] paths) : AService
     {
         var result = new List<string>();
 
-        foreach (var pack in _packs)
+        foreach (var pack in Packs.Where(pack => pack.Enabled))
             result.AddRange(pack.ListFilesAt(path));
 
         return result.ToArray();
@@ -91,7 +92,7 @@ public class ResourcesLoader(string[] paths) : AService
     {
         var result = new List<string>();
 
-        foreach (var pack in _packs)
+        foreach (var pack in Packs.Where(pack => pack.Enabled))
             result.AddRange(pack.ListDirsAt(path));
 
         return result.ToArray();

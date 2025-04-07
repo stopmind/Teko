@@ -3,11 +3,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Teko.Resources;
 
-internal class ResourcesPack
+public class ResourcesPack
 {
     public readonly string Root;
     public readonly string Name;
     public readonly int Priority;
+
+    public bool Enabled = true;
 
     public Stream? GetFile(string path)
     {
