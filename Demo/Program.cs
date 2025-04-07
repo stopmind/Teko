@@ -3,4 +3,4 @@
 using Demo;
 using Teko.Utils;
 
-Init.Run(800, 450, "Teko Demo", new TestScene());
+Init.Run(800, 450, "Teko Demo", new TestScene(), "TEST");

@@ -5,12 +5,14 @@ using Teko.Graphics;
 using Teko.Inject;
 using Teko.Input;
 using Teko.Resources;
+using Teko.Storage;
 
 namespace Demo;
 
 public class TestScene : Scene
 {
     [Inject] private GraphicsService? _graphics;
+    [Inject] private Storage? _storage;
     [Inject] private Input? _input;
     private Texture? _texture;
     private Font? _font;
@@ -19,6 +21,14 @@ public class TestScene : Scene
     
     public override void Ready()
     {
+        const string fileName = ".key";
+        const string testKey = "SomeKey";
+        
+        Console.WriteLine(_storage!.IsFileCrypted(fileName));
+        _storage.SetFileCrypted(fileName, true);
+        Console.WriteLine($"{_storage.ReadFileText(fileName)}/{testKey}");
+        _storage.WriteFileText(fileName, testKey);
+        
         _graphics!.SetLayersCount(6);
         _graphics.SetLayersCount(2);
         

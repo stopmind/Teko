@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.4.2</Version>
+        <Version>0.4.3</Version>
         <Authors>stopmind</Authors>
         <Description>Simple gamedev framework</Description>
         <PackageProjectUrl>https://github.com/stopmind/Teko</PackageProjectUrl>
