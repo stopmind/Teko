@@ -4,6 +4,7 @@ using Teko.Core;
 using Teko.Graphics;
 using Teko.Inject;
 using Teko.Input;
+using Teko.Registry;
 using Teko.Resources;
 using Teko.Storage;
 
@@ -33,6 +34,7 @@ public class TestScene : Scene
         _graphics.SetLayersCount(2);
         
         var resources = Game.GetService<ResourcesLoader>();
+        resources.LoadResource<LoadConfig>("load.json");
         _texture = resources.LoadResource<Texture>("A.png");
         _font = resources.LoadResource<Font>("Monocraft.ttf");
         _font!.SetSmooth(false);

@@ -18,6 +18,7 @@ public class ResourcesLoader(string[] paths) : AService
     protected override void OnSetup()
     {
         AddImporter(new SfmlResourcesImporter());
+        AddImporter(new JsonImporter());
         
         AddAssociatedResource<SfmlResourcesImporter, Texture>();
         AddAssociatedResource<SfmlResourcesImporter, Font>();
@@ -115,7 +116,9 @@ public class ResourcesLoader(string[] paths) : AService
         Type? importer = null;
         
         if (type.IsAssignableTo(typeof(IKnownImporter)))
-            importer = (Type?)type.InvokeMember(nameof(IKnownImporter.GetImporterType), BindingFlags.Static, null, null, [])!;
+            importer = (Type?)type.InvokeMember(nameof(IKnownImporter.GetImporterType), 
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy, 
+                null, null, [])!;
 
         if (importer == null)
             throw new Exception($"A resource '{type.Name}' not have associated importer.");
