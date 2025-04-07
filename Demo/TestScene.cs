@@ -34,7 +34,7 @@ public class TestScene : Scene
         _graphics.SetLayersCount(2);
         
         var resources = Game.GetService<ResourcesLoader>();
-        resources.LoadResource<LoadConfig>("load.json");
+        var load = resources.LoadResource<LoadConfig>("load.json");
         _texture = resources.LoadResource<Texture>("A.png");
         _font = resources.LoadResource<Font>("Monocraft.ttf");
         _font!.SetSmooth(false);

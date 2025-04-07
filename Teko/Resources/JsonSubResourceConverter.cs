@@ -4,6 +4,8 @@ namespace Teko.Resources;
 
 public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
 {
+    private bool _skip = false;
+    
     public override bool CanWrite => false;
     public override bool CanRead => true;
 
@@ -14,7 +16,10 @@ public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
         var path = reader.Value as string;
 
         if (path == null)
-            throw new Exception("A resource must be specified by path");
+        {
+            _skip = true;
+            return serializer.Deserialize(reader, objectType);
+        }
         
         return typeof(ResourcesLoader)
             .GetMethod(nameof(ResourcesLoader.LoadResource))!
@@ -22,6 +27,14 @@ public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
             .Invoke(loader, [path]);
     }
 
-    public override bool CanConvert(Type objectType)
-        => objectType.GetInterface(nameof(IKnownImporter)) != null;
+    public override bool CanConvert(Type objectType) 
+    {
+        if (_skip)
+        {
+            _skip = false;
+            return false;
+        }
+        
+        return objectType.GetInterface(nameof(IKnownImporter)) != null;
+    }
 }
