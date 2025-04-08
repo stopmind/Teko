@@ -56,7 +56,8 @@ public class ResourcesLoader(string[] paths) : AService
         
         foreach (var pack in Packs.Where(pack => pack.Enabled))
         {
-            var stream = pack.GetFile(path);
+            
+            using var stream = pack.GetFile(path);
 
             if (stream == null)
             {
