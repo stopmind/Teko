@@ -3,9 +3,9 @@ using SFML.Graphics;
 
 namespace Teko.Resources;
 
-public class SfmlResourcesImporter : IResourceImporter
+public class SfmlResourcesImporter : AResourceImporter
 {
-    public TResource ImportResource<TResource>(Stream stream) where TResource : class
+    public override TResource ImportResource<TResource>(Stream stream) where TResource : class
     {
         var type = typeof(TResource);
 
@@ -23,4 +23,7 @@ public class SfmlResourcesImporter : IResourceImporter
         
         throw new Exception($"The resource '{type.Name}' not supported.");
     }
+
+    public override bool SaveStream<TResource>()
+        => typeof(TResource) == typeof(Font);
 }

@@ -3,11 +3,11 @@ using Teko.Core;
 
 namespace Teko.Resources;
 
-public class JsonImporter : IResourceImporter
+public class JsonImporter : AResourceImporter
 {
     private JsonSubResourceConverter _converter = new(Game.GetService<ResourcesLoader>());
     
-    public TResource ImportResource<TResource>(Stream stream) where TResource : class
+    public override TResource ImportResource<TResource>(Stream stream) where TResource : class
     {
         using (var reader = new StreamReader(stream))
         {

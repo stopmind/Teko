@@ -14,12 +14,4 @@
     <ItemGroup>
       <PackageReference Include="SFML.Net" Version="2.6.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="bin\Release\net8.0\Assets\Core\A.png" />
-      <Content Include="bin\Release\net8.0\Assets\Core\load.json" />
-      <Content Include="bin\Release\net8.0\Assets\Core\manifest.json" />
-      <Content Include="bin\Release\net8.0\Assets\Core\Monocraft.ttf" />
-    </ItemGroup>
-
 </Project>

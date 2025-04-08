@@ -8,7 +8,7 @@ namespace Teko.Resources;
 
 public class ResourcesLoader(string[] paths) : AService
 {
-    private Dictionary<Type, IResourceImporter> _importers = new();
+    private Dictionary<Type, AResourceImporter> _importers = new();
     private Dictionary<Type, Type> _associatedResources = new();
 
     [Inject] private Logger? _logger;
@@ -47,7 +47,7 @@ public class ResourcesLoader(string[] paths) : AService
             }
         }
         
-        Packs.Sort((aPack, bPack) => aPack.Priority - bPack.Priority);
+        Packs.Sort((aPack, bPack) => bPack.Priority - aPack.Priority);
     }
 
     public TResource? LoadResource<TResource>(string path) where TResource : class
@@ -56,8 +56,7 @@ public class ResourcesLoader(string[] paths) : AService
         
         foreach (var pack in Packs.Where(pack => pack.Enabled))
         {
-            
-            using var stream = pack.GetFile(path);
+            var stream = pack.GetFile(path);
 
             if (stream == null)
             {
@@ -82,32 +81,32 @@ public class ResourcesLoader(string[] paths) : AService
 
     public string[] ListFilesAt(string path)
     {
-        var result = new List<string>();
+        var result = new SortedSet<string>();
 
         foreach (var pack in Packs.Where(pack => pack.Enabled))
-            result.AddRange(pack.ListFilesAt(path));
+            result.UnionWith(pack.ListFilesAt(path));
 
         return result.ToArray();
     }
 
     public string[] ListDirsAt(string path)
     {
-        var result = new List<string>();
+        var result = new SortedSet<string>();
 
         foreach (var pack in Packs.Where(pack => pack.Enabled))
-            result.AddRange(pack.ListDirsAt(path));
+            result.UnionWith(pack.ListDirsAt(path));
 
         return result.ToArray();
     }
 
-    public void AddImporter<TImporter>(TImporter importer) where TImporter : IResourceImporter
+    public void AddImporter<TImporter>(TImporter importer) where TImporter : AResourceImporter
         => _importers[typeof(TImporter)] = importer;
 
-    public void AddAssociatedResource<TImporter, TResource>() where TImporter : IResourceImporter
+    public void AddAssociatedResource<TImporter, TResource>() where TImporter : AResourceImporter
         => _associatedResources[typeof(TResource)] = typeof(TImporter);
     
     
-    public IResourceImporter GetResourceImporter<TResource>()
+    public AResourceImporter GetResourceImporter<TResource>()
     {
         var type = typeof(TResource);
         

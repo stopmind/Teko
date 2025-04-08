@@ -66,11 +66,11 @@ public class Storage : AService
         if (bytes == null)
             return null;
 
-        return Encoding.Unicode.GetString(bytes);
+        return Encoding.UTF8.GetString(bytes);
     }
 
     public void WriteFileText(string file, string content)
-        => WriteFileBytes(file, Encoding.Unicode.GetBytes(content));
+        => WriteFileBytes(file, Encoding.UTF8.GetBytes(content));
 
     public T? ReadFileJson<T>(string file)
     {
