@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SFML.Audio;
+using SFML.Graphics;
 
 namespace Teko.Resources;
 
-public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
+public class SfmlSubResourceConverter(ResourcesLoader loader) : JsonConverter
 {
-    private bool _skip = false;
-    
     public override bool CanWrite => false;
     public override bool CanRead => true;
 
@@ -13,13 +14,10 @@ public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        var path = reader.Value as string;
-
+        var path = serializer.Deserialize<string>(reader);
+        
         if (path == null)
-        {
-            _skip = true;
-            return serializer.Deserialize(reader, objectType);
-        }
+            return null;
         
         return typeof(ResourcesLoader)
             .GetMethod(nameof(ResourcesLoader.LoadResource))!
@@ -27,14 +25,9 @@ public class JsonSubResourceConverter(ResourcesLoader loader) : JsonConverter
             .Invoke(loader, [path]);
     }
 
-    public override bool CanConvert(Type objectType) 
-    {
-        if (_skip)
-        {
-            _skip = false;
-            return false;
-        }
-        
-        return objectType.GetInterface(nameof(IKnownImporter)) != null;
-    }
+    public override bool CanConvert(Type objectType) =>
+        objectType == typeof(Texture) ||
+        objectType == typeof(Font) ||
+        objectType == typeof(Music) ||
+        objectType == typeof(SoundBuffer);
 }

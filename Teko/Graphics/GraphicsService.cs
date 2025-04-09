@@ -43,7 +43,7 @@ public class GraphicsService : AService
         _rect.Size = rect.Size;
         if (texture != null)
             _rect.TextureRect = texRect ?? new IntRect(Vector2iC.Zero, texture.Size.ToInt());
-        _currentLayer?.Texture.Draw(_rect);
+        Draw(_rect);
     }
 
     public void DrawSprite(Vector2f position, Texture texture, Color? color = null, Vector2f? scale = null, IntRect? texRect = null)
@@ -53,7 +53,7 @@ public class GraphicsService : AService
         _sprite.Color = color ?? Color.White;
         _sprite.Scale = scale ?? Vector2fC.One;
         _sprite.TextureRect = texRect ?? new IntRect(Vector2iC.Zero, texture.Size.ToInt());
-        _currentLayer?.Texture.Draw(_sprite);
+        Draw(_sprite);
     }
 
     public void DrawText(Vector2f position, Font font, string content, uint size = 16, Color? color = null)
@@ -61,8 +61,11 @@ public class GraphicsService : AService
         var text = new Text(content, font, size);
         text.Position = position;
         text.FillColor = color ?? Color.White;
-        _currentLayer?.Texture.Draw(text);
+        Draw(text);
     }
+
+    public void Draw(Drawable drawable)
+        => _currentLayer?.Texture.Draw(drawable);
 
     public Vector2u GetSize()
         => GameInner.RenderWindow!.Size;

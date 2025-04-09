@@ -70,7 +70,13 @@ public class ResourcesLoader(string[] paths) : AService
             }
             catch (Exception exception)
             {
-                _logger?.Error($"Resources: Failed load resource \"{path}\" from pack \"{pack.Name}\": {exception.Message}");
+                _logger?.Error(
+                    $"Resources: Failed load resource \"{path}\" from pack \"{pack.Name}\": {exception.Message}");
+            }
+            finally
+            {
+                if (!importer.SaveStream<TResource>())
+                    stream.Close();
             }
         }
 
